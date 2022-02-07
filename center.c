@@ -67,10 +67,13 @@ main(int argc, char **argv)
 			center(stdin);
 		else {
 			FILE *fp;
-			if ((fp = fopen(*argv, "r")) == NULL)
-				errx(EXIT_FAILURE, "fopen");
-			center(fp);
-			fclose(fp);
+			if ((fp = fopen(*argv, "r")) == NULL) {
+				warn("fopen");
+				rval = EXIT_FAILURE;
+			} else {
+				center(fp);
+				fclose(fp);
+			}
 		}
 	} while (*++argv);
 
