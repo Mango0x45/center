@@ -1,0 +1,79 @@
+.Dd $Mdocdate: February 7 2022 $
+.Dt CENTER 1
+.Os
+.Sh NAME
+.Nm center
+.Nd center align text
+.Sh SYNOPSIS
+.Nm
+.Op Fl e
+.Op Fl w Ar width
+.Op Ar
+.Sh DESCRIPTION
+The
+.Nm
+utility reads files sequentially, writing each line center aligned to the standard output.
+The
+.Ar file
+operands are processed in command-line order.
+If
+.Ar file
+is a single dash
+.Pq Sq -
+or absent,
+.Nm
+reads from the standard input.
+When run without arguments, the width on which the output should be centered is automatically
+determined.
+When the output device is a TTY, this is done via the
+.Fn isatty
+function.
+When the output device isn't a terminal then the user is required to pass a width via the
+.Fl w
+flag.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl e
+Do not take ANSI color escape sequences into account when centering input.
+This will cause input containing ANSI color escape sequences to fail to be visually centered.
+.It Fl w Ar width
+Center align the input as if the output device has a width of
+.Ar width .
+This option is required when the output device is not a terminal.
+.Sh EXIT STATUS
+.Ex -std
+.Sh EXAMPLES
+Center align the contents of
+.Ar file1
+and
+.Ar file2
+to the standard output:
+.Pp
+.Dl $ center file1 file2
+.Pp
+Center align a calendar and then follow it with the contents of the file
+.Ar file1 ,
+writing the output to the file
+.Ar file2 .
+Align the calendar as if the output device has a width of 80 columns.
+.Pp
+.Dl $ cal | center | cat - file1 > file2
+.Pp
+Center align the contents of
+.Ar file1
+and write the output to
+.Ar file2
+as if the output device had the same width as the current TTY.
+This requires non\-standard extensions, and you should refer to the
+.Xr tput 1
+manual page.
+.Pp
+.Dl $ center -w `tput cols` file1 > file2
+.Sh SEE ALSO
+.Xr cal 1 ,
+.Xr cat 1 ,
+.Xr tput 1 ,
+.Xr isatty 3
+.Sh AUTHORS
+.An Thomas Voss Aq Mt thomasvoss@live.com
