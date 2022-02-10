@@ -1,4 +1,4 @@
-.Dd $Mdocdate: February 7 2022 $
+.Dd $Mdocdate: February 10 2022 $
 .Dt CENTER 1
 .Os
 .Sh NAME
@@ -58,7 +58,7 @@ writing the output to the file
 .Ar file2 .
 Align the calendar as if the output device has a width of 80 columns.
 .Pp
-.Dl $ cal | center | cat - file1 > file2
+.Dl $ cal | center -w 80 | cat - file1 > file2
 .Pp
 Center align the contents of
 .Ar file1
