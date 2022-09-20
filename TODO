@@ -1,0 +1,70 @@
+Checklist:
+[ ] I
+[ ] II
+[ ] III
+
+
+I: Add a flag that allows the user to specify a tab width.  At the moment tab
+   widths are hardcoded to 8 in the center() function.  Perhaps a new flag could
+   be -t?
+
+
+II: Transform tabs into spaces.  At the moment tabs remain as tabs when centered
+    which causes some visual issues.  For example when centering figure A you
+    would expect to get figure B, but you currently get figure C.  The
+    underscores are a placeholder for a ‹TAB› character.  The current
+    functionality if desired could be provided via a command-line flag such as
+    -r.
+
+    Figure A:
+    /------------------------------------------\
+    | 1234567890                               |
+    | ________12                               |
+    \------------------------------------------/
+
+    Figure B:
+    /------------------------------------------\
+    |                1234567890                |
+    |                ________12                |
+    \------------------------------------------/
+
+    Figure C:
+    /------------------------------------------\
+    |                1234567890                |
+    |                 ________12               |
+    \------------------------------------------/
+
+
+III: Add a new flag for assuming all lines are of the same length as the longest
+     line.  At the moment each line is centered individually, and this means
+     that figure A would get transformed into figure B after being passed
+     through center(1).  We would however often times prefer to have it be
+     transformed into figure C, such as when centering code, or a manual page.
+     This new flag could potentially be -l.
+
+     Figure A:
+     /------------------------------------------\
+     | int                                      |
+     | main(int argc, char **argv)              |
+     | {                                        |
+     |         return EXIT_SUCCESS;             |
+     | }                                        |
+     \------------------------------------------/
+  
+     Figure B:
+     /------------------------------------------\
+     |                   int                    |
+     |       main(int argc, char **argv)        |
+     |                    {                     |
+     |               return EXIT_SUCCESS;       |
+     |                    }                     |
+     \------------------------------------------/
+  
+     Figure C:
+     /------------------------------------------\
+     |       int                                |
+     |       main(int argc, char **argv)        |
+     |       {                                  |
+     |               return EXIT_SUCCESS;       |
+     |       }                                  |
+     \------------------------------------------/
