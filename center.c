@@ -113,8 +113,10 @@ center(FILE *fp)
 			tabs++;
 		}
 
-		len = lenfunc(line) + tabs * 8 - tabs + 1;
-		printf("%*s", ((int) width - len) / 2 + len, line);
+		len = lenfunc(line) + tabs * 8 - tabs;
+		for (int i = (width - len) / 2; i; i--)
+			putchar(' ');
+		fputs(line, stdout);
 	}
 	if (ferror(fp)) {
 		warn("getline");
@@ -144,6 +146,9 @@ utf8len(const char *s)
 
 	while (*s)
 		l += (*s++ & 0xC0) != 0x80;
+
+	if (l > 0 && s[-1] == '\n')
+		l--;
 
 	return l;
 }
