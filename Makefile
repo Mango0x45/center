@@ -1,6 +1,6 @@
 .POSIX:
 
-CFLAGS = -Ofast -march=native -mtune=native -pipe
+CFLAGS = -Ofast -march=native -mtune=native -pipe -Wall -Wextra -Werror -pedantic
 PREFIX = /usr
 
 target = center
