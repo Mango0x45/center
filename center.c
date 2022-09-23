@@ -165,7 +165,7 @@ noesclen(const char *s)
 	while ((d = strchr(d, ESC)) != NULL)
 		off += matchesc(++d);
 	
-	return utf8len(s) + off;
+	return utf8len(s) - off;
 }
 
 /* Return the length of the ANSI color escape sequence at the beginning of the string `s'. If no
