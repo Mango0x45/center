@@ -101,8 +101,8 @@ main(int argc, char **argv)
 void
 center(FILE *fp)
 {
-	char *line = NULL;
-	size_t bs = 0;
+	static char *line = NULL;
+	static size_t bs = 0;
 
 	while (getline(&line, &bs, fp) != -1) {
 		int len, tabs = 0;
