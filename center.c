@@ -44,7 +44,7 @@ extern char *optarg;
 int rval;
 long width;
 int (*lenfunc)(const char *) = noesclen;
-int tabsize;
+int tabsize; 
 
 int
 main(int argc, char **argv)
