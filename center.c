@@ -44,7 +44,7 @@ extern char *optarg;
 int rval;
 long width;
 int (*lenfunc)(const char *) = noesclen;
-int tabsize; 
+int tabsize;
 
 int
 main(int argc, char **argv)
@@ -70,7 +70,7 @@ main(int argc, char **argv)
 			tabsize = strtol(optarg, &endptr, 0);
 		        if (*optarg == '\0' || *endptr != '\0')
 				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
-			if (width <= 0)
+			if (tabsize <= 0)
 				errx(EXIT_FAILURE, "Tab size must be >0");
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given tab size");
