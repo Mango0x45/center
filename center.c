@@ -52,7 +52,7 @@ main(int argc, char **argv)
 	int opt;
 	char *endptr;
 
-	while ((opt = getopt(argc, argv, ":elsw:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elswt:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
