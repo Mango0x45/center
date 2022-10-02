@@ -76,7 +76,7 @@ main(int argc, char **argv)
 				warnx("Potential overflow of given tab size");
 			break;
 		default:
-			fprintf(stderr, "Usage: %s [-e] [-w width] [file ...]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-e] [-w width] [-t tab size] [file ...]\n", argv[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
