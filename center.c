@@ -43,6 +43,7 @@ extern char *optarg;
 
 int rval;
 long width;
+long tabsize;
 int (*lenfunc)(const char *) = noesclen;
 
 int
@@ -51,7 +52,7 @@ main(int argc, char **argv)
 	int opt;
 	char *endptr;
 
-	while ((opt = getopt(argc, argv, ":elsw:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elswt:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
@@ -65,8 +66,17 @@ main(int argc, char **argv)
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given width");
 			break;
+		case 't':
+			tabsize = strtol(optarg, &endptr, 0);
+			if (*optarg == '\0' || *endptr != '\0')
+				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
+			if (tabsize <= 0)
+				errx(EXIT_FAILURE, "Tab size must be >0");
+			if (errno == ERANGE || width > INT_MAX)
+				warnx("Potential overflow of given tab size");
+			break;
 		default:
-			fprintf(stderr, "Usage: %s [-e] [-w width] [file ...]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-e] [-w width] [-t tab size] [file ...]\n", argv[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -113,7 +123,7 @@ center(FILE *fp)
 			tabs++;
 		}
 
-		len = lenfunc(line) + tabs * 8 - tabs;
+		len = lenfunc(line) + tabs * tabsize - tabs;
 		for (int i = (width - len) / 2; i; i--)
 			putchar(' ');
 		fputs(line, stdout);
