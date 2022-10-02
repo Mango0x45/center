@@ -66,9 +66,9 @@ main(int argc, char **argv)
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given width");
 			break;
-		case 't':
-		  tabsize = strtol(optarg, &endptr, 0);
-		  if (*optarg == '\0' || *endptr != '\0')
+		case 't':	
+			tabsize = strtol(optarg, &endptr, 0);
+		        if (*optarg == '\0' || *endptr != '\0')
 				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
 			if (width <= 0)
 				errx(EXIT_FAILURE, "Tab size must be >0");
