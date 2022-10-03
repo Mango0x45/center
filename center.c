@@ -43,7 +43,7 @@ extern char *optarg;
 
 int rval;
 long width;
-long tabsize;
+long tabsize = 8;
 int (*lenfunc)(const char *) = noesclen;
 
 int
@@ -52,7 +52,7 @@ main(int argc, char **argv)
 	int opt;
 	char *endptr;
 
-	while ((opt = getopt(argc, argv, ":elswt:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elsw:t:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
@@ -70,9 +70,9 @@ main(int argc, char **argv)
 			tabsize = strtol(optarg, &endptr, 0);
 			if (*optarg == '\0' || *endptr != '\0')
 				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
-			if (tabsize <= 0)
-				errx(EXIT_FAILURE, "Tab size must be >0");
-			if (errno == ERANGE || width > INT_MAX)
+			if (tabsize < 0)
+				errx(EXIT_FAILURE, "Tab size must be >=0");
+			if (errno == ERANGE || tabsize > INT_MAX)
 				warnx("Potential overflow of given tab size");
 			break;
 		default:
