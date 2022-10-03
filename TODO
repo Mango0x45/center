@@ -2,6 +2,7 @@ Checklist:
 [ ] I
 [ ] II
 [ ] III
+[ ] IV
 
 
 I: Add a flag that allows the user to specify a tab width.  At the moment tab
@@ -68,3 +69,7 @@ III: Add a new flag for assuming all lines are of the same length as the longest
      │               return EXIT_SUCCESS;       │
      │       }                                  │
      └──────────────────────────────────────────┘
+
+
+IV: Add completions for the most popular interactive shells.  This includes
+    bash, zsh, and fish.
