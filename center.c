@@ -52,6 +52,7 @@ extern char *optarg;
 
 int rval;
 long width;
+long tabwidth = 8;
 int (*lenfunc)(const char *) = noesclen;
 
 int
@@ -61,7 +62,7 @@ main(int argc, char **argv)
 	char *endptr;
 	void (*centerfunc)(FILE *) = center;
 
-	while ((opt = getopt(argc, argv, ":elw:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elsw:t:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
@@ -75,11 +76,20 @@ main(int argc, char **argv)
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given width");
 			break;
+		case 't':
+			tabwidth = strtol(optarg, &endptr, 0);
+			if (*optarg == '\0' || *endptr != '\0')
+				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
+			if (tabwidth < 0)
+				errx(EXIT_FAILURE, "Tab width must be >=0");
+			if (errno == ERANGE || tabwidth > INT_MAX)
+				warnx("Potential overflow of given tab size");
+			break;	
 		case 'l':
 			centerfunc = center_by_longest;
 			break;
 		default:
-			fprintf(stderr, "Usage: %s [-e] [-w width] [file ...]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-e] [-w width] [-t tab width] [file ...]\n", argv[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -126,7 +136,7 @@ center(FILE *fp)
 			tabs++;
 		}
 
-		len = lenfunc(line) + tabs * 8 - tabs;
+		len = lenfunc(line) + tabs * tabwidth - tabs;
 		for (int i = (width - len) / 2; i >= 0; i--)
 			putchar(' ');
 		fputs(line, stdout);
