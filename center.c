@@ -62,19 +62,13 @@ main(int argc, char **argv)
 	char *endptr;
 	void (*centerfunc)(FILE *) = center;
 
-	while ((opt = getopt(argc, argv, ":elsw:t:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elt:w:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
 			break;
-		case 'w':
-			width = strtol(optarg, &endptr, 0);
-			if (*optarg == '\0' || *endptr != '\0')
-				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
-			if (width <= 0)
-				errx(EXIT_FAILURE, "Width must be >0");
-			if (errno == ERANGE || width > INT_MAX)
-				warnx("Potential overflow of given width");
+		case 'l':
+			centerfunc = center_by_longest;
 			break;
 		case 't':
 			tabwidth = strtol(optarg, &endptr, 0);
@@ -85,11 +79,17 @@ main(int argc, char **argv)
 			if (errno == ERANGE || tabwidth > INT_MAX)
 				warnx("Potential overflow of given tab size");
 			break;	
-		case 'l':
-			centerfunc = center_by_longest;
+		case 'w':
+			width = strtol(optarg, &endptr, 0);
+			if (*optarg == '\0' || *endptr != '\0')
+				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
+			if (width <= 0)
+				errx(EXIT_FAILURE, "Width must be >0");
+			if (errno == ERANGE || width > INT_MAX)
+				warnx("Potential overflow of given width");
 			break;
 		default:
-			fprintf(stderr, "Usage: %s [-e] [-w width] [-t tab width] [file ...]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-el] [-t tab width] [-w width] [file ...]\n", argv[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
