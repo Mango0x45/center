@@ -183,7 +183,7 @@ center_by_longest(FILE *fp)
 	line = STAILQ_FIRST(&list_head);
 	while (line != NULL) {
 		int len = longest;
-		for (int i = ((width - len) / 2); i >= 0; i--)
+		for (int i = (width - len) / 2; i >= 0; i--)
 			putchar(' ');
 		fputs(line->buffer, stdout);
 
