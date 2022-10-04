@@ -84,6 +84,7 @@ main(int argc, char **argv)
 				errx(EXIT_FAILURE, "Tab width must be >=0");
 			if (errno == ERANGE || tabwidth > INT_MAX)
 				warnx("Potential overflow of given tab size");
+			break;	
 		case 'l':
 			centerfunc = center_by_longest;
 			break;
