@@ -19,6 +19,7 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include <sys/ioctl.h>
+#include <sys/queue.h>
 
 #include <ctype.h>
 #include <err.h>
@@ -32,7 +33,15 @@
 
 #define ESC 033
 
+struct line_item {
+	char *buffer;
+	STAILQ_ENTRY(line_item) list;
+};
+
+STAILQ_HEAD(lines_head, line_item);
+
 static void center(FILE *);
+static void center_by_longest(FILE *);
 static int cols(void);
 static int utf8len(const char *);
 static int noesclen(const char *);
@@ -50,6 +59,7 @@ main(int argc, char **argv)
 {
 	int opt;
 	char *endptr;
+	void (*centerfunc)(FILE *) = center;
 
 	while ((opt = getopt(argc, argv, ":ew:")) != -1) {
 		switch (opt) {
@@ -65,6 +75,9 @@ main(int argc, char **argv)
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given width");
 			break;
+		case 'l':
+			centerfunc = center_by_longest;
+			break;
 		default:
 			fprintf(stderr, "Usage: %s [-e] [-w width] [file ...]\n", argv[0]);
 			exit(EXIT_FAILURE);
@@ -78,17 +91,17 @@ main(int argc, char **argv)
 	argv += optind;
 
 	if (argc == 0)
-		center(stdin);
+		centerfunc(stdin);
 	else do {
 		if (strcmp(*argv, "-") == 0)
-			center(stdin);
+			centerfunc(stdin);
 		else {
 			FILE *fp;
 			if ((fp = fopen(*argv, "r")) == NULL) {
 				warn("fopen");
 				rval = EXIT_FAILURE;
 			} else {
-				center(fp);
+				centerfunc(fp);
 				fclose(fp);
 			}
 		}
@@ -121,6 +134,63 @@ center(FILE *fp)
 	if (ferror(fp)) {
 		warn("getline");
 		rval = EXIT_FAILURE;
+	}
+}
+
+/* Same as center(), but aligns all lines according to the longest line.
+ * Great for centering code.
+ */
+void
+center_by_longest(FILE *fp)
+{
+	static char *buffer = NULL;
+	static size_t bs = 0;
+	struct lines_head list_head;
+	struct line_item *line;
+	struct line_item *tmp;
+	size_t longest = 0;
+	size_t curr_len;
+
+	STAILQ_INIT(&list_head);
+
+	/* Collect all input lines in a list and find the longest */
+	while (getline(&buffer, &bs, fp) != -1) {
+		line = malloc(sizeof(struct line_item));
+		if (!line) {
+			warn("malloc");
+			rval = EXIT_FAILURE;
+			return;
+		}
+
+		line->buffer = buffer;
+		STAILQ_INSERT_TAIL(&list_head, line, list);
+		curr_len = lenfunc(buffer);
+		if (curr_len > longest)
+			longest = curr_len;
+
+		/* Reset buffer and bs so getline can allocate a new buffer next time */
+		buffer = NULL;
+		bs = 0;
+	}
+
+	if (ferror(fp)) {
+		warn("getline");
+		rval = EXIT_FAILURE;
+		return;
+	}
+
+	/* Output lines aligned to the longest and free them */
+	line = STAILQ_FIRST(&list_head);
+	while (line != NULL) {
+		int len = longest;
+		for (int i = ((width - len) / 2); i; i--)
+			putchar(' ');
+		fputs(line->buffer, stdout);
+
+		tmp = STAILQ_NEXT(line, list);
+		free(line->buffer);
+		free(line);
+		line = tmp;
 	}
 }
 
