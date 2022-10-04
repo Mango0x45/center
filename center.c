@@ -89,7 +89,11 @@ main(int argc, char **argv)
 				warnx("Potential overflow of given width");
 			break;
 		default:
-			fprintf(stderr, "Usage: %s [-el] [-t tab width] [-w width] [file ...]\n", argv[0]);
+			fprintf(
+				stderr,
+				"Usage: %s [-el] [-t tab width] [-w width] [file ...]\n",
+				argv[0]
+			);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -120,7 +124,9 @@ main(int argc, char **argv)
 	return rval;
 }
 
-/* Write the contents of the file pointed to by `fp' center aligned to the standard output */
+/* Write the contents of the file pointed to by `fp' center aligned to the
+ * standard output.
+ */
 void
 center(FILE *fp)
 {
@@ -147,8 +153,8 @@ center(FILE *fp)
 	}
 }
 
-/* Same as center(), but aligns all lines according to the longest line.
- * Great for centering code.
+/* Same as center(), but aligns all lines according to the longest line. Great
+ * for centering code.
  */
 void
 center_by_longest(FILE *fp)
@@ -178,7 +184,7 @@ center_by_longest(FILE *fp)
 		if (curr_len > longest)
 			longest = curr_len;
 
-		/* Reset buffer and bs so getline can allocate a new buffer next time */
+		/* Reset buffer and bs so getline() can alloc a new buffer */
 		buffer = NULL;
 		bs = 0;
 	}
@@ -204,7 +210,9 @@ center_by_longest(FILE *fp)
 	}
 }
 
-/* Return the column width of the output device if it is a TTY. If it is not a TTY then return -1 */
+/* Return the column width of the output device if it is a TTY.  If it is not a
+ * TTY then return -1.
+ */
 int
 cols(void)
 {
@@ -233,8 +241,9 @@ utf8len(const char *s)
 	return l;
 }
 
-/* Return the length of the UTF-8 encoded string `s' in characters, not bytes. Additionally this
- * function ignores ANSI color escape sequences when computing the length.
+/* Return the length of the UTF-8 encoded string `s' in characters, not bytes.
+ * Additionally this function ignores ANSI color escape sequences when computing
+ * the length.
  */
 int
 noesclen(const char *s)
@@ -248,9 +257,10 @@ noesclen(const char *s)
 	return utf8len(s) - off;
 }
 
-/* Return the length of the ANSI color escape sequence at the beginning of the string `s'. If no
- * escape sequence is matched then 0 is returned. The local variable `c' is initialized to 3 in order
- * to account for the leading ESC, the following `[', and the trailing `m'.
+/* Return the length of the ANSI color escape sequence at the beginning of the
+ * string `s'.  If no escape sequence is matched then 0 is returned.  The local
+ * variable `c' is initialized to 3 in order to account for the leading ESC, the
+ * following `[', and the trailing `m'.
  */
 int
 matchesc(const char *s)
