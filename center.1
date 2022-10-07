@@ -20,13 +20,15 @@
 .Nd center align text
 .Sh SYNOPSIS
 .Nm
-.Op Fl e
+.Op Fl el
+.Op Fl t Ar "tab width"
 .Op Fl w Ar width
 .Op Ar
 .Sh DESCRIPTION
 The
 .Nm
-utility reads files sequentially, writing each line center aligned to the standard output.
+utility reads files sequentially, writing each line center aligned to the
+standard output.
 The
 .Ar file
 operands are processed in command-line order.
@@ -37,12 +39,13 @@ is a single dash
 or absent,
 .Nm
 reads from the standard input.
-When run without arguments, the width on which the output should be centered is automatically
-determined.
+When run without arguments, the width on which the output should be centered is
+automatically determined.
 When the output device is a TTY, this is done via the
 .Fn isatty
 function.
-When the output device isn't a terminal then the user is required to pass a width via the
+When the output device isn't a terminal then the user is required to pass a
+width via the
 .Fl w
 flag.
 .Pp
@@ -50,7 +53,17 @@ The options are as follows:
 .Bl -tag -width Ds
 .It Fl e
 Do not take ANSI color escape sequences into account when centering input.
-This will cause input containing ANSI color escape sequences to fail to be visually centered.
+This will cause input containing ANSI color escape sequences to fail to be
+visually centered.
+.It Fl l
+Center the file as a whole instead of centering each line individually.
+In otherwords each line is centered as if it has the length of the longest line.
+This is useful for tasks like centering source code.
+.It Fl t Ar "tab width"
+Treat tab characters as if they have a width of
+.Ar "tab width" .
+If this option is not specified, tabs are assumed to have a tab width of 8
+columns.
 .It Fl w Ar width
 Center align the input as if the output device has a width of
 .Ar width .
