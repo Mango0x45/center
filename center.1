@@ -12,7 +12,7 @@
 .\" LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 .\" OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 .\" PERFORMANCE OF THIS SOFTWARE.
-.Dd $Mdocdate: February 10 2022 $
+.Dd $Mdocdate: October 7 2022 $
 .Dt CENTER 1
 .Os
 .Sh NAME
@@ -21,7 +21,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl el
-.Op Fl t Ar "tab width"
+.Op Fl t Ar width
 .Op Fl w Ar width
 .Op Ar
 .Sh DESCRIPTION
@@ -59,9 +59,9 @@ visually centered.
 Center the file as a whole instead of centering each line individually.
 In otherwords each line is centered as if it has the length of the longest line.
 This is useful for tasks like centering source code.
-.It Fl t Ar "tab width"
+.It Fl t Ar width
 Treat tab characters as if they have a width of
-.Ar "tab width" .
+.Ar width .
 If this option is not specified, tabs are assumed to have a tab width of 8
 columns.
 .It Fl w Ar width
