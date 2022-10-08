@@ -12,7 +12,7 @@
 .\" LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 .\" OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 .\" PERFORMANCE OF THIS SOFTWARE.
-.Dd $Mdocdate: October 7 2022 $
+.Dd $Mdocdate: October 8 2022 $
 .Dt CENTER 1
 .Os
 .Sh NAME
@@ -20,7 +20,7 @@
 .Nd center align text
 .Sh SYNOPSIS
 .Nm
-.Op Fl el
+.Op Fl elr
 .Op Fl t Ar width
 .Op Fl w Ar width
 .Op Ar
@@ -59,6 +59,18 @@ visually centered.
 Center the file as a whole instead of centering each line individually.
 In otherwords each line is centered as if it has the length of the longest line.
 This is useful for tasks like centering source code.
+.It Fl r
+Display tabs using spaces.
+By default
+.Nm
+displays tabs using a literal tab character, however this can cause the output
+to not appear as intended.
+This is because tabs align to the next column that is a multiple of 8 instead of
+always displaying as 8 columns.
+This flag ensures that every tab character will display as 8 columns or the
+amount of columns specified by the
+.Fl t
+flag.
 .It Fl t Ar width
 Treat tab characters as if they have a width of
 .Ar width .
@@ -73,9 +85,9 @@ This option is required when the output device is not a terminal.
 .Ex -std
 .Sh EXAMPLES
 Center align the contents of
-.Ar file1
+.Pa file1
 and
-.Ar file2
+.Pa file2
 to the standard output:
 .Pp
 .Dl $ center file1 file2
@@ -89,18 +101,26 @@ Align the calendar as if the output device has a width of 80 columns.
 .Dl $ cal | center -w 80 | cat - file1 > file2
 .Pp
 Center align the contents of
-.Ar file1
+.Pa file1
 and write the output to
-.Ar file2
+.Pa file2
 as if the output device had the same width as the current TTY.
 This requires non\-standard extensions, and you should refer to the
 .Xr tput 1
 manual page.
 .Pp
 .Dl $ center -w `tput cols` file1 > file2
+.Pp
+Center align the C source code file
+.Pa main.c
+assuming a tab width of 4 and view it in
+.Xr less 3 .
+.Pp
+.Dl $ center -lr -t 4 center.c | less
 .Sh SEE ALSO
 .Xr cal 1 ,
 .Xr cat 1 ,
+.Xr less 1 ,
 .Xr tput 1 ,
 .Xr isatty 3
 .Sh AUTHORS
