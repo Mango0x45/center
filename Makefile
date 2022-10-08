@@ -2,6 +2,7 @@
 
 CFLAGS = -Ofast -march=native -mtune=native -pipe -Wall -Wextra -Werror -pedantic
 PREFIX = /usr
+DPREFIX = ${DESTDIR}${PREFIX}
 
 target = center
 
@@ -12,6 +13,6 @@ clean:
 	rm -f ${target}
 
 install:
-	mkdir -p ${PREFIX}/bin ${PREFIX}/share/man/man1
-	cp ${target} ${PREFIX}/bin
-	cp ${target}.1 ${PREFIX}/share/man/man1
+	mkdir -p ${DPREFIX}/bin ${DPREFIX}/share/man/man1
+	cp ${target} ${DPREFIX}/bin
+	cp ${target}.1 ${DPREFIX}/share/man/man1
