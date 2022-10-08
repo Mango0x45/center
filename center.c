@@ -42,10 +42,12 @@ STAILQ_HEAD(lines_head, line_item);
 
 static void center(FILE *);
 static void center_by_longest(FILE *);
+static void println(const char *, size_t);
 static int cols(void);
 static int utf8len(const char *);
 static int noesclen(const char *);
 static int matchesc(const char *);
+static int cnttabs(const char *);
 
 extern int optind;
 extern char *optarg;
@@ -53,7 +55,17 @@ extern char *optarg;
 int rval;
 long width;
 long tabwidth = 8;
+bool rflag;
 int (*lenfunc)(const char *) = noesclen;
+
+/* Return the length of the line `s' which contains `tabs' amount of tab
+ * characters.
+ */
+static inline int
+calclen(const char *s, int tabs)
+{
+	return lenfunc(s) - tabs + tabs * tabwidth;
+}
 
 int
 main(int argc, char **argv)
@@ -62,7 +74,7 @@ main(int argc, char **argv)
 	char *endptr;
 	void (*centerfunc)(FILE *) = center;
 
-	while ((opt = getopt(argc, argv, ":elt:w:")) != -1) {
+	while ((opt = getopt(argc, argv, ":elrt:w:")) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
@@ -78,7 +90,7 @@ main(int argc, char **argv)
 				errx(EXIT_FAILURE, "Tab width must be >=0");
 			if (errno == ERANGE || tabwidth > INT_MAX)
 				warnx("Potential overflow of given tab size");
-			break;	
+			break;
 		case 'w':
 			width = strtol(optarg, &endptr, 0);
 			if (*optarg == '\0' || *endptr != '\0')
@@ -88,10 +100,13 @@ main(int argc, char **argv)
 			if (errno == ERANGE || width > INT_MAX)
 				warnx("Potential overflow of given width");
 			break;
+		case 'r':
+			rflag = true;
+			break;
 		default:
 			fprintf(
 				stderr,
-				"Usage: %s [-el] [-t width] [-w width] [file ...]\n",
+				"Usage: %s [-elr] [-t width] [-w width] [file ...]\n",
 				argv[0]
 			);
 			exit(EXIT_FAILURE);
@@ -134,18 +149,11 @@ center(FILE *fp)
 	static size_t bs = 0;
 
 	while (getline(&line, &bs, fp) != -1) {
-		int len, tabs = 0;
-		char *match = line;
+		int len, tabs;
+		tabs = cnttabs(line);
+		len = calclen(line, tabs);
 
-		while (strchr(match, '\t')) {
-			match++;
-			tabs++;
-		}
-
-		len = lenfunc(line) + tabs * tabwidth - tabs;
-		for (int i = (width - len) / 2; i >= 0; i--)
-			putchar(' ');
-		fputs(line, stdout);
+		println(line, len);
 	}
 	if (ferror(fp)) {
 		warn("getline");
@@ -159,13 +167,12 @@ center(FILE *fp)
 void
 center_by_longest(FILE *fp)
 {
+	int tabs;
+	size_t curr_len, longest = 0;
+	struct lines_head list_head;
+	struct line_item *line, *tmp;
 	static char *buffer = NULL;
 	static size_t bs = 0;
-	struct lines_head list_head;
-	struct line_item *line;
-	struct line_item *tmp;
-	size_t longest = 0;
-	size_t curr_len;
 
 	STAILQ_INIT(&list_head);
 
@@ -180,7 +187,8 @@ center_by_longest(FILE *fp)
 
 		line->buffer = buffer;
 		STAILQ_INSERT_TAIL(&list_head, line, list);
-		curr_len = lenfunc(buffer);
+		tabs = cnttabs(buffer);
+		curr_len = calclen(buffer, tabs);
 		if (curr_len > longest)
 			longest = curr_len;
 
@@ -198,11 +206,7 @@ center_by_longest(FILE *fp)
 	/* Output lines aligned to the longest and free them */
 	line = STAILQ_FIRST(&list_head);
 	while (line != NULL) {
-		int len = longest;
-		for (int i = (width - len) / 2; i >= 0; i--)
-			putchar(' ');
-		fputs(line->buffer, stdout);
-
+		println(line->buffer, longest);
 		tmp = STAILQ_NEXT(line, list);
 		free(line->buffer);
 		free(line);
@@ -253,7 +257,7 @@ noesclen(const char *s)
 
 	while ((d = strchr(d, ESC)) != NULL)
 		off += matchesc(++d);
-	
+
 	return utf8len(s) - off;
 }
 
@@ -266,13 +270,44 @@ int
 matchesc(const char *s)
 {
 	int c = 3;
-	
+
 	if (*s++ != '[')
 		return 0;
 	while (isdigit(*s) || *s == ';') {
 		c++;
 		s++;
 	}
-	
+
 	return *s == 'm' ? c : 0;
+}
+
+/* Return the amount of tab characters present in the string `s'. */
+int
+cnttabs(const char *s)
+{
+	int cnt = 0;
+	const char *p = s - 1;
+	while ((p = strchr(p + 1, '\t')) != NULL)
+		cnt++;
+	return cnt;
+
+}
+
+/* Print the line `s' with a length of `len' centered to standard output. */
+void
+println(const char *s, size_t len)
+{
+	for (int i = (width - len) / 2; i >= 0; i--)
+		putchar(' ');
+
+	if (rflag) {
+		for (int i = 0; s[i]; i++) {
+			if (s[i] == '\t') {
+				for (int j = 0; j < tabwidth; j++)
+					putchar(' ');
+			} else
+				putchar(s[i]);
+		}
+	} else
+		fputs(s, stdout);
 }
