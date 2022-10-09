@@ -43,6 +43,7 @@ STAILQ_HEAD(lines_head, line_item);
 static void center(FILE *);
 static void center_by_longest(FILE *);
 static void println(const char *, size_t);
+static void polong(long *n, const char *s);
 static int cols(void);
 static int utf8len(const char *);
 static int noesclen(const char *);
@@ -53,7 +54,7 @@ extern int optind;
 extern char *optarg;
 
 int rval;
-long width;
+long width = -1;
 long tabwidth = 8;
 bool rflag;
 int (*lenfunc)(const char *) = noesclen;
@@ -71,7 +72,6 @@ int
 main(int argc, char **argv)
 {
 	int opt;
-	char *endptr;
 	void (*centerfunc)(FILE *) = center;
 
 	while ((opt = getopt(argc, argv, ":elrt:w:")) != -1) {
@@ -83,22 +83,10 @@ main(int argc, char **argv)
 			centerfunc = center_by_longest;
 			break;
 		case 't':
-			tabwidth = strtol(optarg, &endptr, 0);
-			if (*optarg == '\0' || *endptr != '\0')
-				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
-			if (tabwidth < 0)
-				errx(EXIT_FAILURE, "Tab width must be >=0");
-			if (errno == ERANGE || tabwidth > INT_MAX)
-				warnx("Potential overflow of given tab size");
+			polong(&tabwidth, "tab width");
 			break;
 		case 'w':
-			width = strtol(optarg, &endptr, 0);
-			if (*optarg == '\0' || *endptr != '\0')
-				errx(EXIT_FAILURE, "Invalid integer '%s'", optarg);
-			if (width <= 0)
-				errx(EXIT_FAILURE, "Width must be >0");
-			if (errno == ERANGE || width > INT_MAX)
-				warnx("Potential overflow of given width");
+			polong(&width, "width");
 			break;
 		case 'r':
 			rflag = true;
@@ -113,8 +101,8 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (!width && (width = cols()) == -1)
-		errx(EXIT_FAILURE, "Unable to determine output width");
+	if (width == -1 && (width = cols()) == -1)
+		errx(EXIT_FAILURE, "unable to determine output width");
 
 	argc -= optind;
 	argv += optind;
@@ -290,7 +278,6 @@ cnttabs(const char *s)
 	while ((p = strchr(p + 1, '\t')) != NULL)
 		cnt++;
 	return cnt;
-
 }
 
 /* Print the line `s' with a length of `len' centered to standard output. */
@@ -310,4 +297,20 @@ println(const char *s, size_t len)
 		}
 	} else
 		fputs(s, stdout);
+}
+
+/* Parse `optarg' as a long and store the result in `n'.  If `optarg' is less
+ * than 0 then print a diagnostic message with the variable name `s' and exit.
+ */
+void
+polong(long *n, const char *s)
+{
+	char *endptr;
+	*n = strtol(optarg, &endptr, 0);
+	if (*optarg == '\0' || *endptr != '\0')
+		errx(EXIT_FAILURE, "invalid integer '%s'", optarg);
+	if (*n < 0)
+		errx(EXIT_FAILURE, "%s must be >= 0", s);
+	if (errno == ERANGE || *n > INT_MAX) \
+		warnx("potential overflow of given tab size");
 }
