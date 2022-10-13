@@ -13,7 +13,8 @@ If you're on an arch-based Linux distribution, then you can install `center`
 from the aur:
 
 ```sh
-paru -S center-git
+paru -S center      # The lastest stable release
+paru -S center-git  # The most up-to-date release
 ```
 
 Otherwise if you would like to build from source, simply run:
