@@ -46,7 +46,7 @@ STAILQ_HEAD(lines_head, line_item);
 static void center(FILE *);
 static void center_by_longest(FILE *);
 static void println(const char *, size_t);
-static void polong(long *n, const char *s);
+static long polong(char *, const char *);
 static int cols(void);
 static int utf8len(const char *);
 static int noesclen(const char *);
@@ -89,10 +89,10 @@ main(int argc, char **argv)
 			rflag = true;
 			break;
 		case 't':
-			polong(&tabwidth, "tab width");
+			tabwidth = polong(optarg, "tab width");
 			break;
 		case 'w':
-			polong(&width, "width");
+			width = polong(optarg, "output width");
 			break;
 		default:
 			fprintf(
@@ -104,8 +104,8 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (width == -1 && (width = cols()) == -1)
-		diex("unable to determine output width");
+	if (width == -1)
+		width = cols();
 
 	argc -= optind;
 	argv += optind;
@@ -211,12 +211,18 @@ center_by_longest(FILE *fp)
 int
 cols(void)
 {
+	char *s;
 	struct winsize w;
 
-	if (!isatty(STDOUT_FILENO))
-		return -1;
-	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1)
-		die("ioctl");
+	if ((s = getenv("COLUMNS")) != NULL)
+		return polong(s, "output width");
+
+	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) {
+		if (errno == ENOTTY)
+			return 80;
+		else
+			die("ioctl");
+	}
 
 	return w.ws_col;
 }
@@ -305,15 +311,17 @@ println(const char *s, size_t len)
 /* Parse `optarg' as a long and store the result in `n'.  If `optarg' is less
  * than 0 then print a diagnostic message with the variable name `s' and exit.
  */
-void
-polong(long *n, const char *s)
+long
+polong(char *s, const char *e)
 {
+	long n;
 	char *endptr;
-	*n = strtol(optarg, &endptr, 0);
-	if (*optarg == '\0' || *endptr != '\0')
-		diex("invalid integer '%s'", optarg);
-	if (*n < 0)
-		diex("%s must be >= 0", s);
-	if (errno == ERANGE || *n > INT_MAX) \
-		warnx("potential overflow of given %s", s);
+	n = strtol(s, &endptr, 0);
+	if (*s == '\0' || *endptr != '\0')
+		diex("invalid integer '%s'", s);
+	if (n < 0)
+		diex("%s must be >= 0", e);
+	if (errno == ERANGE || n > INT_MAX) \
+		warnx("potential overflow of %s", e);
+	return n;
 }
