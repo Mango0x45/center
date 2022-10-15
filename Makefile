@@ -1,6 +1,8 @@
 .POSIX:
 
-CFLAGS  = -Ofast -march=native -mtune=native -pipe -Wall -Wextra -Werror -pedantic
+CFLAGS  = -Wall -Wextra -Wpedantic -Werror \
+	  -O3 -march=native -mtune=native -fomit-frame-pointer \
+	  -pipe
 PREFIX  = /usr
 DPREFIX = ${DESTDIR}${PREFIX}
 MANDIR  = ${DPREFIX}/share/man
