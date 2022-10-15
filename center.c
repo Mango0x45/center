@@ -230,8 +230,8 @@ utf8len(const char *s)
 {
 	int l = 0;
 
-	while (*s)
-		l += (*s++ & 0xC0) != 0x80;
+	for (; *s; s++)
+		l += *s == '\b' ? -1 : (*s & 0xC0) != 0x80;
 
 	if (l > 0 && s[-1] == '\n')
 		l--;
