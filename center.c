@@ -15,9 +15,6 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define POSIXLY_CORRECT
-#define _POSIX_C_SOURCE 200809L
-
 #include <sys/ioctl.h>
 #include <sys/queue.h>
 
