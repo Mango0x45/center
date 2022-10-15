@@ -33,6 +33,9 @@
 
 #define ESC 033
 
+#define  die(...)  err(EXIT_FAILURE, __VA_ARGS__)
+#define diex(...) errx(EXIT_FAILURE, __VA_ARGS__)
+
 struct line_item {
 	char *buffer;
 	STAILQ_ENTRY(line_item) list;
@@ -102,7 +105,7 @@ main(int argc, char **argv)
 	}
 
 	if (width == -1 && (width = cols()) == -1)
-		errx(EXIT_FAILURE, "unable to determine output width");
+		diex("unable to determine output width");
 
 	argc -= optind;
 	argv += optind;
@@ -213,7 +216,7 @@ cols(void)
 	if (!isatty(STDOUT_FILENO))
 		return -1;
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1)
-		err(EXIT_FAILURE, "ioctl");
+		die("ioctl");
 
 	return w.ws_col;
 }
@@ -308,9 +311,9 @@ polong(long *n, const char *s)
 	char *endptr;
 	*n = strtol(optarg, &endptr, 0);
 	if (*optarg == '\0' || *endptr != '\0')
-		errx(EXIT_FAILURE, "invalid integer '%s'", optarg);
+		diex("invalid integer '%s'", optarg);
 	if (*n < 0)
-		errx(EXIT_FAILURE, "%s must be >= 0", s);
+		diex("%s must be >= 0", s);
 	if (errno == ERANGE || *n > INT_MAX) \
 		warnx("potential overflow of given tab size");
 }
