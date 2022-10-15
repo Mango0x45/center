@@ -82,14 +82,14 @@ main(int argc, char **argv)
 		case 'l':
 			centerfunc = center_by_longest;
 			break;
+		case 'r':
+			rflag = true;
+			break;
 		case 't':
 			polong(&tabwidth, "tab width");
 			break;
 		case 'w':
 			polong(&width, "width");
-			break;
-		case 'r':
-			rflag = true;
 			break;
 		default:
 			fprintf(
