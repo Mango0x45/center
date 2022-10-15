@@ -1,8 +1,9 @@
 .POSIX:
 
-CFLAGS = -Ofast -march=native -mtune=native -pipe -Wall -Wextra -Werror -pedantic
-PREFIX = /usr
+CFLAGS  = -Ofast -march=native -mtune=native -pipe -Wall -Wextra -Werror -pedantic
+PREFIX  = /usr
 DPREFIX = ${DESTDIR}${PREFIX}
+MANDIR  = ${DPREFIX}/share/man
 
 target = center
 
@@ -13,6 +14,6 @@ clean:
 	rm -f ${target}
 
 install:
-	mkdir -p ${DPREFIX}/bin ${DPREFIX}/share/man/man1
+	mkdir -p ${DPREFIX}/bin ${MANDIR}/man1
 	cp ${target} ${DPREFIX}/bin
-	cp ${target}.1 ${DPREFIX}/share/man/man1
+	cp ${target}.1 ${MANDIR}/man1
