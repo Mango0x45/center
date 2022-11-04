@@ -29,6 +29,7 @@
 #include <unistd.h>
 
 #define ESC 033
+#define PROG_ARGS "[-elr] [-t width] [-w width] [file ...]\n"
 
 #define  die(...)  err(EXIT_FAILURE, __VA_ARGS__)
 #define diex(...) errx(EXIT_FAILURE, __VA_ARGS__)
@@ -92,11 +93,7 @@ main(int argc, char **argv)
 			width = polong(optarg, "output width");
 			break;
 		default:
-			fprintf(
-				stderr,
-				"Usage: %s [-elr] [-t width] [-w width] [file ...]\n",
-				argv[0]
-			);
+			fprintf(stderr, "Usage: %s " PROG_ARGS, argv[0]);
 			exit(EXIT_FAILURE);
 		}
 	}
