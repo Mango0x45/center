@@ -287,7 +287,7 @@ cnttabs(const char *s)
 void
 println(const char *s, size_t len)
 {
-	for (int i = (width - len) / 2; i >= 0; i--)
+	for (int i = (width - len) / 2 - 1; i >= 0; i--)
 		putchar(' ');
 
 	if (rflag) {
