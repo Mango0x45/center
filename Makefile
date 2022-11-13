@@ -2,7 +2,7 @@
 
 CFLAGS   = -Wall -Wextra -Wpedantic -Werror \
 	   -O3 -march=native -mtune=native -fomit-frame-pointer \
-	   -pipe -D_POSIX_C_SOURCE=200809
+	   -pipe
 PREFIX   = /usr
 DPREFIX  = ${DESTDIR}${PREFIX}
 MANDIR   = ${DPREFIX}/share/man
