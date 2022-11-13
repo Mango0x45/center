@@ -30,8 +30,6 @@
 #include <unistd.h>
 
 #define ESC 033
-#define OPTSTR "elrt:w:"
-#define PROG_ARGS "[-elr] [-t width] [-w width] [file ...]\n"
 
 #define  die(...)  err(EXIT_FAILURE, __VA_ARGS__)
 #define diex(...) errx(EXIT_FAILURE, __VA_ARGS__)
@@ -75,6 +73,8 @@ int
 main(int argc, char **argv)
 {
 	int opt;
+	const char *optstr   = "elrt:w:",
+	           *progargs = "[-elr] [-t width] [-w width] [file ...]";
 	void (*centerfunc)(FILE *) = center;
 	static struct option longopts[] = {
 		{"ignore-ansi", no_argument,       NULL, 'e'},
@@ -84,8 +84,7 @@ main(int argc, char **argv)
 		{"width",       required_argument, NULL, 'w'},
 		{NULL,          0,                 NULL,  0 }
 	};
-
-	while ((opt = getopt_long(argc, argv, OPTSTR, longopts, NULL)) != -1) {
+	while ((opt = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;
@@ -103,7 +102,7 @@ main(int argc, char **argv)
 			width = polong(optarg, "output width");
 			break;
 		default:
-			fprintf(stderr, "Usage: %s " PROG_ARGS, argv[0]);
+			fprintf(stderr, "Usage: %s %s\n", argv[0], progargs);
 			exit(EXIT_FAILURE);
 		}
 	}
