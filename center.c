@@ -21,6 +21,7 @@
 #include <ctype.h>
 #include <err.h>
 #include <errno.h>
+#include <getopt.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -29,6 +30,7 @@
 #include <unistd.h>
 
 #define ESC 033
+#define OPTSTR "elrt:w:"
 #define PROG_ARGS "[-elr] [-t width] [-w width] [file ...]\n"
 
 #define  die(...)  err(EXIT_FAILURE, __VA_ARGS__)
@@ -74,8 +76,16 @@ main(int argc, char **argv)
 {
 	int opt;
 	void (*centerfunc)(FILE *) = center;
+	static struct option longopts[] = {
+		{"ignore-ansi", no_argument,       NULL, 'e'},
+		{"longest",     no_argument,       NULL, 'l'},
+		{"spaces",      no_argument,       NULL, 'r'},
+		{"tabsize",     required_argument, NULL, 't'},
+		{"width",       required_argument, NULL, 'w'},
+		{NULL,          0,                 NULL,  0 }
+	};
 
-	while ((opt = getopt(argc, argv, ":elrt:w:")) != -1) {
+	while ((opt = getopt_long(argc, argv, OPTSTR, longopts, NULL)) != -1) {
 		switch (opt) {
 		case 'e':
 			lenfunc = utf8len;

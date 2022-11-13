@@ -1,11 +1,11 @@
 #compdef center
 
-_arguments -sS                                                         \
-	'-e[do not consider ANSI color escape sequences]'              \
-	'-l[center files, not files]'                                  \
-	'-r[display tabs using spaces]'                                \
-	'-t+[specify width of tab characters]:tab width (in columns)'  \
-	'-w+[specify output width]:output width (in columns)'          \
-	'*: :_files'
+_arguments -s -S \
+	'(-e --ignore-ansi)'{-e,--ignore-ansi}'[do not consider ANSI color escape sequences]' \
+	'(-l --longest)'{-l,--longest}'[center files, not files]' \
+	'(-r --spaces)'{-r,--spaces}'[display tabs using spaces]' \
+	'(-t --tabsize)'{-t+,--tabsize=}'[specify width of tab characters]:integer' \
+	'(-w --width)'{-w+,--width=}'[specify output width]:integer' \
+	'*:file:_files'
 
 # vi: ft=zsh

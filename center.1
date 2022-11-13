@@ -12,7 +12,7 @@
 .\" LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 .\" OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 .\" PERFORMANCE OF THIS SOFTWARE.
-.Dd $Mdocdate: October 8 2022 $
+.Dd $Mdocdate: November 13 2022 $
 .Dt CENTER 1
 .Os
 .Sh NAME
@@ -51,15 +51,15 @@ flag.
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
-.It Fl e
+.It Fl e Ns , Fl Fl ignore\-ansi
 Do not take ANSI color escape sequences into account when centering input.
 This will cause input containing ANSI color escape sequences to fail to be
 visually centered.
-.It Fl l
+.It Fl l Ns , Fl Fl longest
 Center the file as a whole instead of centering each line individually.
 In otherwords each line is centered as if it has the length of the longest line.
 This is useful for tasks like centering source code.
-.It Fl r
+.It Fl r Ns , Fl Fl spaces
 Display tabs using spaces.
 By default
 .Nm
@@ -71,12 +71,12 @@ This flag ensures that every tab character will display as 8 columns or the
 amount of columns specified by the
 .Fl t
 flag.
-.It Fl t Ar width
+.It Fl t Ns , Fl Fl tabsize Ns = Ns Ar width
 Treat tab characters as if they have a width of
 .Ar width .
 If this option is not specified, tabs are assumed to have a tab width of 8
 columns.
-.It Fl w Ar width
+.It Fl w Ns , Fl Fl width Ns = Ns Ar width
 Center align the input as if the output device has a width of
 .Ar width .
 This option is required when the output device is not a terminal.
