@@ -1,7 +1,7 @@
 .POSIX:
 
 CFLAGS   = -Wall -Wextra -Wpedantic -Werror \
-	   -O3 -march=native -mtune=native -fomit-frame-pointer \
+	   -O3 -march=native -mtune=native  \
 	   -pipe
 PREFIX   = /usr
 DPREFIX  = ${DESTDIR}${PREFIX}
