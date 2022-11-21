@@ -31,7 +31,7 @@
 
 #define ESC 033
 
-#define  die(...)  err(EXIT_FAILURE, __VA_ARGS__)
+#define die(...) err(EXIT_FAILURE, __VA_ARGS__)
 #define diex(...) errx(EXIT_FAILURE, __VA_ARGS__)
 
 struct line_item {
@@ -45,13 +45,13 @@ static void center(FILE *);
 static void center_by_longest(FILE *);
 static void println(const char *, size_t);
 static long polong(char *, const char *);
-static int cols(void);
-static int utf8len(const char *);
-static int noesclen(const char *);
-static int matchesc(const char *);
-static int cnttabs(const char *);
+static int  cols(void);
+static int  utf8len(const char *);
+static int  noesclen(const char *);
+static int  matchesc(const char *);
+static int  cnttabs(const char *);
 
-extern int optind;
+extern int   optind;
 extern char *optarg;
 
 int rval;
@@ -82,7 +82,7 @@ main(int argc, char **argv)
 		{"spaces",      no_argument,       NULL, 'r'},
 		{"tabsize",     required_argument, NULL, 't'},
 		{"width",       required_argument, NULL, 'w'},
-		{NULL,          0,                 NULL,  0 }
+		{ NULL,         0,                 NULL,  0 }
 	};
 	while ((opt = getopt_long(argc, argv, optstr, longopts, NULL)) != -1) {
 		switch (opt) {
