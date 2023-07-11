@@ -324,7 +324,7 @@ polong(char *s, const char *e)
 		diex("invalid integer '%s'", s);
 	if (n < 0)
 		diex("%s must be >= 0", e);
-	if (errno == ERANGE || n > INT_MAX) \
+	if (errno == ERANGE || n > INT_MAX)
 		warnx("potential overflow of %s", e);
 	return n;
 }
